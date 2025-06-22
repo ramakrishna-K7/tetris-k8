@@ -9,10 +9,6 @@ In this project, we are deploying a Node.js application to a Kubernetes cluster 
 6.	OWASP Dependency Check: To detect vulnerable dependencies and improve software security.
 7.	Kubernetes: The container orchestration platform for managing, scaling, and deploying the application.
 8.	ArgoCD: A declarative GitOps tool for continuous deployment and application management on Kubernetes.
-9.	Prometheus: For monitoring the health and performance of the Kubernetes cluster and application.
-10.	Grafana: For visualizing metrics and monitoring data collected by Prometheus.
-Together, these tools will enable a secure, automated, and efficient CI/CD pipeline for deploying and managing a Node.js application in a Kubernetes cluster.
-Prerequisites
 Before installing Kops, ensure you have the following:
 ●	AWS Account with IAM permissions to create EC2 instances, S3 buckets, and Route 53 DNS records.
 ●	kubectl installed to interact with the Kubernetes cluster.
