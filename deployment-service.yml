@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: tetris
-        image: shaikmustafa/shammu:devops
+        image: ramakrishna737/game:v1
         ports:
         - containerPort: 3000   # Use port 3000
 
@@ -31,4 +31,5 @@ spec:
   - protocol: TCP
     port: 80                 # Expose port 80
     targetPort: 3000
-  type: LoadBalancer
+    nodePort: 30080
+  type: NodePort
