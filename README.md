@@ -1,14 +1,14 @@
               Containerizing the NodeJs application by implementing CI/CD tools.
 ________________________________________
-STEP2: Create a Cluster
+STEP 1: Create a Cluster
 ________________________________________
-STEP 3: Install the Jenkins & Docker & SonarQube & Install the Trivy
+STEP 2: Install the Jenkins & Docker & SonarQube & Install the Trivy
 ________________________________________
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 PIPELINE VIEW:
  ![image](https://github.com/user-attachments/assets/7507242b-bdb7-48f4-a64b-b73a4a3941fe)
 
-STEP 4: Install Prometheus & Grafana using helm
+STEP 3: Install Prometheus & Grafana using helm
  Log in to ArgoCD UI
 Access the ArgoCD web interface 
 Create a New Application
