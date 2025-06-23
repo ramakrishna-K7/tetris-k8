@@ -1,63 +1,55 @@
-pipeline{
+pipeline {
     agent any
-    tools{
+    tools {
         jdk 'jdk17'
-        terraform 'terraform'
+        nodejs 'node16'
     }
-    stages{
-        stage('clean Workspace'){
-            steps{
-                cleanWs()
+    environment {
+        SCANNER_HOME=tool 'mysonar'
+    }
+        stage ("git checkout") {
+            steps {
+                git branch: 'main', credentialsId: 'Github_user', url: 'https://github.com/ramakrishna-k7/tetris-k8.git'
             }
         }
-        stage('checkout from Git'){
+        stage("code quality") {
             steps{
-                git branch: 'main', url: 'https://github.com/Aj7Ay/TERRAFORM-JENKINS-CICD.git'
-            }
-        }
-        stage('Terraform version'){
-             steps{
-                 sh 'terraform --version'
-                }
-        }
-        stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Terraform \
-                    -Dsonar.projectKey=Terraform '''
+                withSonarQubeEnv('mysonar') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=zomato \
+                    -Dsonar.projectKey=zomato '''
                 }
             }
         }
-        stage("quality gate"){
-           steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
-                }
-            } 
+        stage ("install dependencies") {
+            steps {
+                sh 'npm install'
+            }
         }
-        stage('TRIVY FS SCAN') {
+        stage ("check dependencies") {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'Dp-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+         stage ("Build image") {
+            steps {
+                sh 'docker build -t image1 .'
+            }
+        }
+         stage ("trivy image Scan") {
             steps {
                 sh "trivy fs . > trivyfs.txt"
+                sh 'trivy image ramakrishna737/game:v1'
             }
         }
-        stage('Excutable permission to userdata'){
+        stage("Push to dockerhub"){
             steps{
-                sh 'chmod 777 website.sh'
-            }
-        }
-        stage('Terraform init'){
-            steps{
-                sh 'terraform init'
-            }
-        }
-        stage('Terraform plan'){
-            steps{
-                sh 'terraform plan'
-            }
-        }
-        stage('Terraform apply'){
-            steps{
-                sh 'terraform ${action} --auto approve'
+                script{
+                    withDockerRegistry(credentialsId: 'docker-password') {
+                        sh "docker tag image1 ramakrishna737/game:v1"
+                        sh "docker push ramakrishna737/game:v1"
+                    }
+                }
             }
         }
     }
